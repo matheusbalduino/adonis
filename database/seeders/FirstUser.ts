@@ -9,11 +9,13 @@ export default class FirstUserSeeder extends BaseSeeder {
       {
         email: 'matheus@gmail.com',
         password: '123456',
+        role: 'normal'
       },
       {
         email: 'admin@gmail.com',
         password: '123456',
-      },
+        role: 'admin'
+      }
     ])
   }
 }

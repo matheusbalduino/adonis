@@ -1,22 +1,26 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-//import Posts from 'Database/migrations/1648933901778_posts'
+import { StoreValidator, UpdateValidator } from 'App/Validators/Post'
 
-//import Database from '@ioc:Adonis/Lucid/Database'
+//import Posts from 'Database/migrations/1648933901778_posts'
+import Database from '@ioc:Adonis/Lucid/Database'
 
 import Post from 'App/Models/Post'
 
 export default class PostsController {
   public async index({}: HttpContextContract) {
-    const post = await Post.all()
-
+    const post = await Post.query().preload('user')
     return post
   }
 
-  public async store({ request }: HttpContextContract) {
-    const data = request.only(['title', 'content'])
-    console.log(data)
+  public async store({ request, auth }: HttpContextContract) {
+    //const data = request.only(['title', 'content'])
+    const data = await request.validate(StoreValidator)
 
-    const post = await Post.create(data)
+    const user = await auth.authenticate()
+
+    const post = await Post.create({ userId: user.id, ...data })
+
+    post.preload('user')
 
     return post
   }
@@ -34,8 +38,8 @@ export default class PostsController {
 
   public async update({ request, params }: HttpContextContract) {
     const post = await Post.findOrFail(params.id)
-    const data = request.only(['title', 'content'])
-
+    //const data = request.only(['title', 'content'])
+    const data = await request.validate(UpdateValidator)
     post.merge(data)
 
     await post.save()

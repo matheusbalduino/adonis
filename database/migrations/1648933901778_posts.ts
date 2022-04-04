@@ -6,6 +6,7 @@ export default class Posts extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
       table.string('title').notNullable()
       table.text('content', 'longtext').notNullable()
       table.timestamps(true) //created_at, updated_at

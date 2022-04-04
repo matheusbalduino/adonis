@@ -41,12 +41,11 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
         port: Env.get('MYSQL_PORT'),
         user: Env.get('MYSQL_USER'),
         password: Env.get('MYSQL_PASSWORD', ''),
-        database: Env.get('MYSQL_DB_NAME'),
+        database: Env.get('MYSQL_DB_NAME')
       },
       healthCheck: false,
-			debug: false,
-    },
-
+      debug: false
+    }
   },
 
   /*
@@ -62,7 +61,10 @@ const databaseConfig: DatabaseConfig & { orm: Partial<OrmConfig> } = {
   |
   */
   orm: {
-  },
+    getSerializeAsKey(_, key) {
+      return key
+    }
+  }
 }
 
 export default databaseConfig
